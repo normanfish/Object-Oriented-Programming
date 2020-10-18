@@ -1,0 +1,226 @@
+Exercise 3 
+Hash Tables (Open and Closed) using abstract classes, facades and wrappers.
+
+
+
+=============================
+=      File description     =
+=============================
+SimpleHashSet.java- declares the abstract class "SimpleHashSet". 
+
+OpenHashSet.java - implements a hash set using an open hashing scheme
+(A subclass of SimpleHashSet)
+
+ClosedHashSet.java - implements a hash set using an closed hashing scheme
+(A subclass of SimpleHashSet)
+
+CollectionFacadeSet.java - A facade class meant to hold an object of type 
+"Collection" without implementing all of the methods in "Collection" interface.
+This is done so that we can implement a "gunned down" Collection that works
+our API.
+
+SimpleSetPerformancewAnalyzer.java - implements an analyzer class, whose primary
+job is to test results of different data structures.
+
+tsString.java - a wrapper class around String, that will be stored in the
+Closed Hash table, instead if regular Strings. This class will allow us to
+deal with insertion and deletion of Strings from the Hash table, as will later
+be specified. 
+
+RESULTS - the results of running different tests (from data1.txt and data2.txt) across our data structures.
+
+data1.txt/data2.txt - test values for the hash tables
+
+
+
+=============================
+=          Design           =
+=============================
+
+OpenHashSet is essentially an array of TreeSets. ClosedHashSet is an array
+of a class called "tsString". We'll now explain the design logic behind 
+tsString.
+ 
+tsString is a wrapper class around the String type that contains
+2 fields:   "data" - a String type which olds the String itself.
+			"keepChecking" - a boolean variable whose job it is to hold
+			information about whether we ever inserted a value in tsString 
+			(even if no value is in data at the time of checking).
+
+The use of tsString in ClosedHashSet, allows us to know if we have to "keep
+ checking" further in the table for a value we are looking for, as it tells us
+if there was a potential for a string with a similar hash value to be stored
+elsewhere, other than its original hash value (by quadratic probing).
+This method works even if the value of the cell in the hash table is deleted
+
+
+
+=============================
+=  Implementation details   =
+=============================
+
+1) As stated above, OpenHashSet is essentially an array consisting of TreeSets.
+Every String that is added or deleted from the hash table is added or removed
+from the TreeSet in the index of the String's hash value.
+
+2) Deletion mechanism in ClosedHashSet - the code is made up of three main
+ parts:
+	a) run "contains" to see if the value does indeed exists in the Set. if it
+	doesn't, return false.
+	b) if we did find the value in the set, we would have saved it in the 
+	"nextavailablespot" variable as part of the contains method. Since
+	we know exactly where the String is, we'll reset ONLY THE DATA of the tsString
+	stored in the index we found, and keep the "keepChecking" variable at True.
+	Tis ensures, that is we want to look for another value that might have been 
+	added to a different cell using quadratic indexing (while it's hash value
+	cell was taken) would be found.
+	c) rehash if the load factor goes beneath the minimum.
+
+3) In my implementation, i ran 10000 iterations of "contains" to "warm up" the
+data Set, before actually checking the time it took to find a value. In my
+ opinion, 10000 strikes a good balance of being substantial enough for the
+warm up, while taking less than a second of actual time. 
+
+
+
+=============================
+=      Analysis Results     =
+=============================
+
+*** marks the fastest
+
+#These values correspond to the time it takes (in ms) to insert data1 to all
+ data structures
+OpenHashSet_AddData1 = 573
+ClosedHashSet_AddData1 = 2826798
+***TreeSet_AddData1 = 141
+LinkedList_AddData1 = 117620
+HashSet_AddData1 = 201
+
+#These values correspond to the time it takes (in ms) to insert data2 to all
+ data structures
+OpenHashSet_AddData2 = 246
+ClosedHashSet_AddData2 = 73
+TreeSet_AddData2 = 97
+LinkedList_AddData2 = 62765
+***HashSet_AddData2 = 23
+
+#These values correspond to the time it takes (in ns) to check if "hi" is
+ contained in
+#the data structures initialized with data1
+***OpenHashSet_Contains_hi1 = 2767403
+ClosedHashSet_Contains_hi1 = 3592482
+TreeSet_Contains_hi1 = 7638728
+LinkedList_Contains_hi1 = 224088727677
+HashSet_Contains_hi1 = 3769558
+
+#These values correspond to the time it takes (in ns) to check if
+ "-13170890158" is contained in
+#the data structures initialized with data1
+***OpenHashSet_Contains_negative = 5706923
+ClosedHashSet_Contains_negative = 307187326054
+TreeSet_Contains_negative = 7442334
+LinkedList_Contains_negative = 131635008202
+HashSet_Contains_negative = 7870407
+
+#These values correspond to the time it takes (in ns) to check if "23" is
+ contained in
+#the data structures initialized with data2
+OpenHashSet_Contains_23 = 2272251
+ClosedHashSet_Contains_23 = 2242548
+TreeSet_Contains_23 = 6597061
+LinkedList_Contains_23 = 83202698
+***HashSet_Contains_23 = 2118612
+
+#These values correspond to the time it takes (in ns) to check if "hi" is
+ contained in
+#the data structures initialized with data2
+***OpenHashSet_Contains_hi2 = 1413178
+ClosedHashSet_Contains_hi2 = 2286893
+TreeSet_Contains_hi2 = 20397457
+LinkedList_Contains_hi2 = 52660783422
+HashSet_Contains_hi2 = 1614544
+
+#These values correspond to the time it takes (in ms) to initialize the data
+#structures with data1
+OpenHashSet = 208
+ClosedHashSet= 1214771
+TreeSet = 613
+LinkedList = 244
+HashSet = 144
+
+#These values correspond to the time it takes (in ms) to initialize the data
+#structures with data2
+OpenHashSet = 108
+ClosedHashSet = 136
+TreeSet = 217
+LinkedList = 26
+HashSet = 34
+
+Now, let's talk about the analysis results:
+
+	a) Why did OpenHashSet and ClosedHashSet perform so poorly for data1?
+	The reason for this is that all Strings in data1 had the same hash value,
+	that means, that for the OpenHashSet, we always inserted in the same
+	TreeSet, which also runs on a Hashing scheme. Therefor, it takes a while
+	for the TreeSet to find a correct spot for a lot of values with similar
+	hash values. For the ClosedHashSet, since every value has the same hash 
+	value, the quadratic probing had to be invoked at every insert, with the 
+	value "i" for the quadratic probing equation getting higher and higher
+	with each new insertion. for instance, if we already inserted 70,000 
+	elements with the same hash value to a hash table, in order to insert the 
+	70,001st String, we would have to run i from 0 to 70,000 to find a 
+	place for the value. This is hardly efficient, and makes inserting a new 
+	value with the same hash take long.
+	
+	b) Short Strengths and Weaknesses - 
+		OpenHashSet - 	Pros: Simple to write, effective for Storing
+						random values.
+						Cons: Bad at strong values that have similar hash
+						values. If implemented equally, works slightly slower
+						that ClosedHashSet of equivalent size and load.
+		ClosedHashSet - Pros: Very quick for random Values, all basic 
+						run quickly, and it is relatively memory efficient.
+						Cons: The worst at storing values with similar hash value
+		LinkedList - 	Pros: The hash values or in fact any other values don't
+						matter to the algorithm, equal insert, delete and search
+						times for all types of data.
+						Cons: Slowest for normal values, since insertion,
+						deletion and search take O(n) time. In my 
+						experience running the program, after about 70,000 values
+						it started to be noticeably slow.
+		HashSet - 		Pros: Combines the best of both Hash Sets I implemented.
+						Might be slightly slower for some things,
+						but it's ease of use along with better coding make it
+						a no brainer for randomly distributed values.
+						Cons: Can't store duplicates
+		TreeSet - 		Pros: quick, with the added advantage that it keeps
+						the values inside in ordered value!
+						Cons: Takes longer than a regular HashSet, due to the
+						need to balance itself and maintain order.
+		
+		In my personal experience, I would use a HashSet for holding random
+		data which likely wont have the same hash values and i don't need to
+		keep in order. TreeSets for value that i won't need to store duplicates
+		 but keeping the order is important. LinkedLists for places where
+		we need to know the index of each value, and we want to store duplicates.
+		
+	c) My implementation ran operations at around the same time that HashSet ran.
+		Though, HashSet has a lot more functionality and is Generic.
+		
+	d)  The results That surprised me were the extremely long times for the Hash
+		based data sets in dealing with values of similar hashing, they were
+		obviously not meant to handle more than a few percent of Strings
+		sharing the same Hash values. I definitely expected the LinkedList to
+		perform slower for "normal" values than The Hash type implementations,
+		as we proved and talked about in Data Structures.
+		
+=============================
+=       Miscellaneous       =
+=============================
+			
+I used the "SuppressWarnings" ticker on two methods for rawtype and unchecked
+errors, because i couldn't figure out how to assign a new TreeSet array.
+Whenever i tried to write something like table = new TreeSet[size]; when i 
+would try to add the <> to the TreeSet array, the program would fail to compile,
+even though i believe that's what's the problem is. 
