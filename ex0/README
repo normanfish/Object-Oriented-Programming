@@ -1,7 +1,3 @@
-noam.fisher
-
-
-
 
 =============================
 =      File description     =
@@ -12,6 +8,7 @@ them.
 Library.java - implements a library, which stored books and patrons.
 patrons can borrow and return books from the library, and the library can
 suggest a book to a patron depending on his tast
+ex0.pdf - Excersize instructions
 
 
 
@@ -31,7 +28,3 @@ number.
 the index number of the cell in which the book or the patron is stored in the
 array is its id number.
 
-
-=============================
-=    Answers to questions   =
-=============================
