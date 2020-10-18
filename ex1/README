@@ -9,7 +9,7 @@ Competition.java - implements the competiton class, which handles the board,
 the players and the scores 
 Player.java - Implements the player class, which is basically how the players 
 play.
-ex1.pdf - Excercize instructions
+ex1.pdf - Exercise instructions
 
 
 
@@ -74,8 +74,8 @@ player.
  B) The last row is marked, and again, 3 of the 4 rows are empty, and the final
  row can be ceared in one move. for example: 
  
-	 0
-	000
+     0
+    000
    00000
   1110000
  000000000
