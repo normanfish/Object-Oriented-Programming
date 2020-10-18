@@ -1,0 +1,127 @@
+=============================
+=      File description     =
+=============================
+SpaceShip.java- implements and declares the abstract class "SpaceShip".
+
+SpaceSHipFactory.java - implements the SpaceShip generator factory, which 
+creates the different spaceships for the game.
+
+BasherSpaceShip.java - implements the basher type spaceship. (A subclass of 
+Spaceship)
+
+RunnerSpaceShip.java - implements the runner type spaceship. (A subclass of 
+Spaceship)
+
+SpecialSpaceShip.java - implements the special type spaceship. (A subclass of 
+Spaceship)
+
+AggressiveSpaceShip.java - implements the aggressive type spaceship.
+(A subclass of Spaceship)
+
+DrunkardSpaceShip.java - implements the drunkard type spaceship. (A subclass of 
+Spaceship)
+
+HumanSpaceShip.java - implements the human type spaceship. (A subclass of 
+Spaceship)
+
+ex2.pdf - Exercise Instructions
+
+
+
+=============================
+=          Design           =
+=============================
+
+For this assignment, we were required to implement a SpaceShip class, and
+various types of spaceships which are all subclass to the main SpaceShip class.
+
+I chose to implement the SpaceShip class as an abstract class, with a constructor
+and the common core functions of the spaceship implemented. Furthermore, the
+class constants were made protected (meaning viewable but not changeable).
+
+I chose this implementation for 3 main reasons:
+
+1) As the game does not support using a "normal" spaceship (i.e. a spaceship
+that doesn't have a specific type), I made the class abstract as to discourage 
+its use if the program is expanded.
+
+2) In general, i distrust other developers who will expand the code, and therefor,
+any function that could be implemented in the SpaceShip class, meaning, 
+that it's core functionality (getting hit, activating a shield, and ect.) are
+already implemented under the Spaceship. This eliminates two potential 
+problems down the road. 
+	a. spaceships that doesn't work properly, due to bad implemetation of core
+		functions later on.
+	b. saves time for any developer looking to add more spaceships to the game.
+
+	It is for this second reason that the constructor is supplied as well,
+	although it is an abstract class. As most of the spaceships in the game
+	stick by the default values of gameplay, there was no real need to have 
+	5/6 spaceships have the same constructor in their respective subclasses.
+	
+3) From a portability point of view, the game is just about as easy to understand
+and expand as it gets. If another developer wishes to change 
+anything about the general game behavior (shorter cool off times and such),
+the default constants and functions are located in one place (SpaceShip class), 
+and he doesn't have to implement any code he wishes to add to the game immediately,
+as the spaceship calss is abstract (and can choose which spaceships get this feature
+and which don't). 
+Most functions directly show in terms of readability the process going on each
+turn for each spaceship, and can be picked up relatively quickly.
+
+Lastly, a few words about the relationship between the parent class (Spaceship)
+and its subclasses.
+
+Although most of the implemetation of methods takes place in the spaceship class,
+with the spaceships default values, if another subclass were to be created, the
+class variables and methods could be changed, since most of these are 
+protected and not private. While, sacrificing a bit on the minimal interface
+principle, this greatly increases extensibility and portability.  
+
+
+
+=============================
+=  Implementation details   =
+=============================
+
+Most of the important details are already describes in the other sections.
+Nonthless, A few notable details worth mentioning about the implementation:
+
+1) Every time an addition or subtraction to values is done, it is done "safely"
+meaning, values are always positive and never exceed maximum.
+
+2) Human controlled ship runs orders by a priority protocol.
+
+3) The function are generally short, meaning, most functions are less than 15
+lines. This is done to increase readability.
+
+4) The only 2 methods which weren't implemented in the abstract class, are the 
+domove and get picture, which change according to each spaceship and cannot be 
+determined in advanced.
+
+
+
+
+=============================
+=    Answers to questions   =
+=============================
+
+ The idea behind the drunkard player and the special player as follows:
+ 
+ 1. The drunkard player has 3 modes (corresponding with the 3 types of drunks
+ in the galaxy), which is chosen at random every turn.
+	a. sleepy drunk - keeps moving straight at a constant speed
+	b. party hard drunk - presses buttons on the ship like there's no
+	tomorrow! will move randomly and fire and activate shield at the same time
+	c. secretely vindictive drunk - moves toward the nearest spaceship and 
+	attacks it (regardless of distance)
+
+2. The special player ("Mosquito") - is a spaceship that has less health than
+other spaceships, but has more energy and shorter cool down periods. this 
+ship is meant to be a disposable "mine" opposing enemy formations, by rapidly
+intercepting enemy flyers, engaging in a short and brutal attack lasting
+usually just a few seconds, and then dying once enemy defences catch up.
+The special player activates it's shield every 5th turn, in order to conserve
+its energy for shooting. if the mosquito's life is less than 20%, it will
+teleport away for a fresh attack. In any case, the mosquito goes toward the
+nearest ship and fires.
