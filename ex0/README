@@ -1,0 +1,37 @@
+noam.fisher
+
+
+
+
+=============================
+=      File description     =
+=============================
+Book.java - implements the book class to be stored in a library.
+Patron.java - implements the patron class, who can borrow books and critique
+them.
+Library.java - implements a library, which stored books and patrons.
+patrons can borrow and return books from the library, and the library can
+suggest a book to a patron depending on his tast
+
+
+
+=============================
+=          Design           =
+=============================
+For this assignment, i decided to store the books and tha patrons in arrays
+as part of the library object, for the sake of simplicity. the index number
+of the cell in which the book or the patron is stored in the array is its id 
+number.
+
+
+
+=============================
+=  Implementation details   =
+=============================
+the index number of the cell in which the book or the patron is stored in the
+array is its id number.
+
+
+=============================
+=    Answers to questions   =
+=============================
