@@ -19,7 +19,7 @@ CollectionFacadeSet.java - A facade class meant to hold an object of type
 This is done so that we can implement a "gunned down" Collection that works
 our API.
 
-SimpleSetPerformancewAnalyzer.java - implements an analyzer class, whose primary
+SimpleSetPerformanceAnalyzer.java - implements an analyzer class, whose primary
 job is to test results of different data structures.
 
 tsString.java - a wrapper class around String, that will be stored in the
