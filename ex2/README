@@ -1,5 +1,4 @@
-noam.fisher
-
+Exersize 2 - Inheritance and Polymorphism
 
 
 
@@ -48,10 +47,9 @@ I chose this implementation for 3 main reasons:
 that doesn't have a specific type), I made the class abstract as to discourage 
 its use if the program is expanded.
 
-2) In general, i distrust other developers who will expand the code, and therefor,
-any function that could be implemented in the SpaceShip class, meaning, 
-that it's core functionality (getting hit, activating a shield, and ect.) are
-already implemented under the Spaceship. This eliminates two potential 
+2) In general, any function that could be implemented in the SpaceShip class, meaning, 
+that its core functionality (getting hit, activating a shield, and ect.) is
+already implemented under the Spaceship class. This eliminates two potential 
 problems down the road. 
 	a. spaceships that doesn't work properly, due to bad implemetation of core
 		functions later on.
@@ -78,7 +76,7 @@ and its subclasses.
 Although most of the implemetation of methods takes place in the spaceship class,
 with the spaceships default values, if another subclass were to be created, the
 class variables and methods could be changed, since most of these are 
-protected and not private. While, sacrificing a bit on the minimal interface
+protected and not private. While sacrificing a bit on the minimal interface
 principle, this greatly increases extensibility and portability.  
 
 
