@@ -1,0 +1,93 @@
+
+=============================
+=      File description     =
+=============================
+Board.java - implements the Board class for the Nim game
+Move.java - implements the move class, which consists of a row, the left stick
+and the right stick
+Competition.java - implements the competiton class, which handles the board,
+the players and the scores 
+Player.java - Implements the player class, which is basically how the players 
+play.
+ex1.pdf - Excercize instructions
+
+
+
+=============================
+=          Design           =
+=============================
+The interaction between classes is as follows. The main function creates a new
+ competition, and runs it. A competition holds inside
+2 players and their score, and runs the amount of games specified by the user.
+Each round is run separately with its own board, and after each round, the
+score is updated. The player classes hold the players strategy, so every turn
+is in essence asking a player (depending on the type) to play out his strategy,
+, which is returned to the main program using a special class (the Move class)
+and then the program checks if the move was legal or not.
+
+
+
+
+=============================
+=  Implementation details   =
+=============================
+A few notable details worth mentioning about the implementation:
+
+The board class holds the information about that state of the board. Each board
+is used for only one game, and the board class only has function that relay
+information about the state of the board, and if a certain move is legal.
+
+The player class has 4 strategies, which are used according to the player
+who is playing. If the player is a human player, the UI prompts for input
+are implemented in the human player function.
+
+The move class is simply a nice DS designed to hold the relevant information 
+about a move (row, left stick and right stick).
+
+The competition class, is in charge of initializing a new board every round, 
+getting the move the players wish to make, and update the board if the move 
+is legal.
+
+
+=============================
+=    Answers to questions   =
+=============================
+ the implementation of the smart player - as I chose it, is as follows:
+ 
+ 1) The smart player first checks if the board is one on of two "victory
+ states", meaning the game can be one by doing one move. The two victory states
+ are:
+ 
+ A) The last row is unmarked, 3 of the other four rows are empty, and one of 
+ the other rows can be cleared in a single move (meaning all of it's sticks
+ could be marked in a single turn). for example:
+ 
+     1
+    000
+   01111
+  0000000
+ 000000000
+
+in this case, the player will clear the row, and leave the top stick to the other
+player.
+
+ B) The last row is marked, and again, 3 of the 4 rows are empty, and the final
+ row can be ceared in one move. for example: 
+ 
+	 0
+	000
+   00000
+  1110000
+ 000000000
+ 
+ in this case, the smart player will clear out the row and leave 1 stick
+ unmarked, for the other player to pick up and lose.
+ 
+ 2) If the board is not currently in one of these two "victory states", then
+ it checks if the first row is full, and if it is, it clears it all. To be
+ completely honest, i don't know why this works, but after running
+ around a million of games, i saw this improved the chance of winning by about 
+ 8%.
+ 
+ 3) If none of the previous conditions exists, then the smart player chooses
+ a move at random.
