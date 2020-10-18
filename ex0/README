@@ -8,7 +8,7 @@ them.
 Library.java - implements a library, which stored books and patrons.
 patrons can borrow and return books from the library, and the library can
 suggest a book to a patron depending on his tast
-ex0.pdf - Excersize instructions
+ex0.pdf - Exercise instructions
 
 
 
