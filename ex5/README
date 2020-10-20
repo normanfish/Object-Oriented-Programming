@@ -1,0 +1,87 @@
+Exercise 5
+
+File parsing, Filters and Ordering
+
+=============================
+=      File description     =
+=============================
+Command.java - Implements a class that represents the commands info of a single section in the command file.
+DirectoryProcessor.java - Contains the main method which receives the source directory, from which files are
+to be filtered, and a command file, which contains sections of FILTER and ORDER sub-sections.
+Parser.java - Implements a class in charge of handling type 2 errors in the command file and parsing the
+command file into sections.
+BadSubException - Extends Exception and represents a type 2 error in the ORDER or FILTER sub-sections.
+Order.java - Implements a class in charge of ordering the files that came back from the filter in a
+certain order.
+OrderFuncFactory.java - Represents a factory class for constructing the various ordering functions.
+sizeComparator.java - Orders files by their size.
+typeComparator.java - Orders files by their type.
+Filter.java - Filters the files in the directory according to the filters specified in each FILTER sub-section.
+FilterFunc.java - An abstract parent class for the Filter Functions that is used by the program to filter
+files.
+FilterFuncFactory.java - The factory class for creating the different Filter Functions.
+BetweenFilter.java - Filters files which size is between (inclusive) 2 given numbers (in k-bytes).
+ExecutableFilter.java - Filters files with execution permission.
+FileNameContainsFilter.java - Filters files which contain a given value in their name.
+FileNameEqualToFilter.java - Filters files with a name equal to a given value.
+FileNamePrefixFilter.java - Filters files with the same prefix as the given value.
+FileNameSuffixFilter.java - Filters files with the same suffix as the given value.
+GreaterThanFilter.java - Filters files which size is strictly greater than a given number (in k-bytes).
+HiddenFilter.java - Filters files that are hidden.
+NoFilter.java - All files are matched.
+SmallerThanFilter.java - Filters files which size is strictly smaller than a given number (in k-bytes).
+WritableFilter.java - Filters files that have a writing permissions.
+
+
+
+
+=============================
+=          Design           =
+=============================
+In the filesprocessing package we've created 2 additional packages:
+
+FilterPackage - This package contains all files relevant to filtering the files in the given source directory.
+We've created separate classes for each type of filter and by that allowing the program to be more modular,
+and creates an opportunity to add more different types of filters in the future. Which is why the Filter
+class, which is in charge of "activating" a certain type of filter on the directory isn't dependant on the
+type of filter, and again this allows the addition of new filters.
+We've created the FilterFuncFactory class which implements the Factory principle as taught in class.
+
+OrderPackage - This package contains all files relevant to ordering the files that were filtered.
+This package too contains an OrderFuncFactory class and an Order class which apply the same principles as
+explained in the previous package.
+
+The filesprocessing package, among other files, also contains the:
+-Parser class which is in charge of checking for type 2 errors in the command file and parsing the command
+file into sections.
+-Command class which represents a single section in the command file.
+
+
+
+
+
+=============================
+=  Implementation details   =
+=============================
+The process of the program and exception hierarchy is as follows:
+The program first checks that the number of given arguments are valid. If they aren't it will print a relevant
+error message and will stop the program. Otherwise, it will create a Parser object and activate it's
+error2Handler() method that may throw either one of 2 types of exceptions:
+* IOException in case there was a problem accessing the command file.
+* BadSubException in case of a type 2 error in the command file (as explained in the pdf).
+If an exception was thrown the program prints the relevant error message and will stop the program.
+Otherwise, the Parser object  will return a list of commands, each represents a section in the command file.
+The program then iterates over each command and filters and orders the files as required.
+
+Sorting matched files:
+We wanted to use a java implementation that allows for convenient ordering via Comparator types, while still maintaining
+the ease of addition and subtraction that we are "used" to from lists. therefor, we used an ArrayList<String> to hold
+the names of the files that were matched, and the java "sort" function from the "Collections" abstract type. This way,
+we could sort by different order comparators, while automatically sorting by lexiographic order.
+=============================
+=    Answers to questions   =
+=============================
+
+
+
+
