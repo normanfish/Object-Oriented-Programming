@@ -1,0 +1,139 @@
+Exercise 4
+
+AVL Tree implementation and iterator
+
+=============================
+=  File Description  =
+=============================
+The file contains two classes:
+
+1. AVLTree - The class objects represent an AVL binary search tree, built of nodes from the Node class.
+
+2. Node - The class objects represent a node in a general binary search tree (also suitable for an Avl tree).
+
+=============================
+=  Design  =
+=============================
+We created a general Node class. All fields and methods executed by the node objects are generalized to
+fit different kinds of binary trees in the future, and not only Avl trees.
+
+For that purpose, the nodes are not "aware" that they belong to an AVL tree, and all the "Avl-properties" are
+managed and executed in the AvlTree class and not in the Node class.
+
+In this way, it will be possible to build in the future additional binary search tree which are not Avl trees
+ and still use the Node class due to its generalized functionality.
+
+=============================
+=  Implementation details   =
+=============================
+1. The add() method -
+
+(*) Firstly, the method checks if the tree is empty - if so - it creates a new node with the int input data,
+and makes it the root of the tree object.
+
+(*) If the tree is not empty - the method calls the recursive addRecursiveHelper() method. This method
+receives the tree root and the int input (given to the wrapper add() method) - and finds the position the int
+should be in accordance to the tree root.
+
+The search is done by considering the properties ob all binary trees (left son smaller than father, and right
+son larger than father).
+
+(*) The recursive addRecursiveHelper() method is called and ends at one of the two base-cases:
+
+    (1) It found a node with the int input, already int the tree. - In this case returns 'false'.
+    (2) It did not find the node with the data. - In this case it creates a new node at the relevant place and
+        returns 'true'.
+
+(*) The boolean 'true'/'false' is then returned from the recursive method addRecursiveHelper() to the general
+    add() method, called.
+
+ 2. The delete() method -
+
+   (*) The general delete() method calls the recursive method deleteHelper().
+
+   (*) deleteHelper() receives the following parameters:
+
+        (1) int to delete (if exists)
+        (2) the root of the subtree to check for the node to delete
+        (3) a boolean flag - if 'true' it updates the counter of total nodes (by decreasing one).
+
+    (*) Firstly, the deleteHelper() checks if the given int already exists in the subtree, rooted by the given
+        node parameter. The methods checks existence of a node with the int input by calling the
+        containsHelper() method (which receives the deleted int and the root of the subtree to check).
+        If it does not exist - the method returns 'false'.
+
+    (*) If a node with the value to delete does exists - the method will calls one of the following helper
+    methods, which will delete the wanted node and return 'true':
+
+        (1) case 1 - the deleted node is a leaf (this is checked by calling isLeaf() on the relevant node). If
+        this is the case the method deletes the leaf (updates father pointers to 'null') and returns 'true'.
+
+        (2) case 2 - the deleted node is not a leaf, but has a single son (either left or right). In this
+        case the node father of the deleted node is connected to the single son of the node.
+
+        Notice that there are two helper methods in this case- deleteRootWithSingleSon() and singleSonDelete().
+        The method called depends if the node deleted is the root of the tree or not.
+
+        (3) case 3 - the deleted node has two sons. In this case the deleteFatherOfTwo() method is called. The
+         method checks for the successor of the node to delete (by calling successor()) and then swaps the
+         data of the node to delete with the data of its successor.
+
+         Then deleteHelper() is called recursively on the subtree rooted in the right son of the node to
+         delete. Notice -  that the successor will always be either a leaf or a father of one (because if were
+         a father of two nodes then its left son would be the successor).
+
+    (*) After each one of the cases mentioned above - the balanceUp() method is called, in order to keep the
+    "Avl property", and a boolean 'true' is returned.
+
+
+3. Iterator() -
+
+    The iterator method creates an Iterator object  specifically for the tree. The over-ridden hasNext()
+    method calls the successor (starting from the smallest node in the tree) - thus allowing iteration by
+    ascending order of the nodes building the tree.
+
+    Also, an NoSuchElementException() is thrown if the Iterator object reaches the largest node, and can't be
+    called again.
+
+
+
+=============================
+=  Theoretical Questions  =
+=============================
+
+Question 5.1 -
+
+[10, 4, 12, 2, 6, 11, 15, 1, 5, 7, 14, 9]
+
+Question 5.2 -
+
+(1) The asymptotic running time complexity in AvlTree(int[] data) is NlogN. That is because the add()
+method called is asymptotically logN (because it is bound by the tree high which is ~logN). And because add()
+is called N times, the total asymptotic running time is NlogN.
+
+(2) *Bonus* - As learned in class, the best possible running time is still NlogN. But we can still reduce the
+constant by arranging the input in a specific order, which will automatically obey the "Avl property" and
+won't need to use rotations to adjust the Avl tree's height.
+
+Question 5.3 -
+
+(1) The asymptotic running time complexity of the tree construction in AvlTree(AvlTree avlTree) is NlogN.
+That is due to the implementation - we iterate over all of the nodes and call add() (on the new tree) in each
+iteration. Thus add(), which is logN, is called N times - bringing the running time complexity to a total of
+NlogN.
+
+(2) As learned in class - the best possible running time is linear (N). This is achieved by recursively
+going over all the nodes and directly adding them to their fathers (by calculating their index, based on a
+mathematical formula).
+
+Question 5.4 -
+
+(1) The asymptotic running time complexity of our findMinNodes() implementation is h (~ logN). That is because
+ our method does a total of h iterations, and the height (h) is ~ logN (as learned in class).
+
+(2) This is not the best possible asymptotic running time complexity. The best running time is constant O(1),
+and is achieved by using a mathematical formula to calculate the nth Fibonacci number -
+[ (Phi)n - (phi)n ]/Sqrt[5].
+
+
+
