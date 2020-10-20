@@ -1,0 +1,259 @@
+Exercise 6
+
+Building a mini JAVA compiler, using REGEX, Exceptions and two-step code verification.
+
+=============================
+=  File Description  =
+=============================
+The file contains The following files:
+
+- main package -
+1. Sjavac - the main program class. The class receives a path to a Java file and verifies the code is written
+well. The output is 0/1/2 as mentioned in the file description.
+
+ - Types Package -
+2. JavaType - a class which represents five java primitives (int, double, char, string, boolean).
+
+3. FunctionType - a class which represents a method, including its' signature - with relevant parameter input.
+
+- Regex package -
+4. FirstRunnerValidator - Receives a single String and checks if it matches a valid syntax of a global method,
+or a variable (at any scope, including inner scopes). If syntax is valid the class objects add the relevant
+variables/ methods to the dictionary, otherwise - an exception is thrown.
+
+5. SecondRunnerValidator - Receives a single String and checks if it matches a valid syntax of a condition
+(if/while) of if it matches a call for an inner method - inside a local scope of one of the program methods.
+If illegal input is found - an exception is thrown.
+
+6. ValidatorException - A general Exception which is the super-class all other program exception extend.
+    (1)  AssignmentInFunctionDeclarationException
+    (2)  BadBooleanConditionException
+    (3)  EmptyAssignmentException
+    (4)  EmptyFinalDeclarationException
+    (5)  FinalAssignmentException
+    (6)  MoreThanOneEqualsException
+    (7)  NoReturnValueException
+    (8)  VariableAlreadyExistsException
+    (9)  VariableNotDeclaredException
+    (10) SyntaxException
+
+All of the 10 Exception classes above have a unique message, indicating the reason they were thrown.
+
+
+=============================
+=  Implementation details   =
+=============================
+
+- General Program Flow -
+
+The Sjavac main() method receives (as a program argument) - the name of the file path, and sends it to the
+firstRunner() method.
+
+The firstRunner() method parses the input file line-by-line, generates a firstRunnerValidator object and
+commits the following actions:
+
+(*) validates global variables and adds them to the relevant dictionary
+(*) validates method signatures and adds them to the relevant dictionary
+(*) Uses a stack data structure to count "curly" parenthesis ("{}") of relevant scopes
+(*) validates that the scopes are valid - by checking that the line before the last scope line, contains a
+    "return;" statement.
+
+The, the secondRunner() method is called. The method parses the input file line-by-line and :
+
+(*) at every local scope declared - the local variables are added to the relevant dictionary
+(*) while/if statements are checked for validity
+
+
+Also, we used the java LinkedHasMap data structure due to its ability to keep the declared in correct order.
+
+-------------------------------------------------------------------------------------------------------------
+
+- Error Handling  (6.1 Questions) -
+
+Firstly, We created a superclass ValidatorException to encapsulate all errors which include invalid syntax.
+The encapsulation allowed us to avoid code duplication ( a single 'catch' phrase for all 9 exceptions) and
+also allow the same treatment for each exception (print - "1") in the Sjavac class.
+
+Also, grouping the exceptions did not disrupt the ability of each exception object to be unique and have a
+different message (polymorphism).
+
+Secondly, IO exceptions are thrown in the main Sjavac class - in case one of the two stream bufferedReader
+objects searches for a file with and illegal name.
+
+A separate 'catch' phrase form the ValidatorException catch phrase was uses for the IO Exception - in order to
+bring to a different result (print "2", as required).
+
+
+Also, Exceptions were used in the JavaType class, for two main purposes:
+
+(*) Catching errors which are in the code *content* but not in the code *syntax*. In many cases the Regex
+package files received a String line which is syntactically valid (thus, the Regex package files did not throw
+an Exception indicating invalid syntax) but the line content itself was invalid.
+
+For Example, a global variable initiated as "final int a", without "=". In this case we purposely allowed the
+Regex package classes to create the relevant JavaType objects - but the EmptyFinalDeclarationException was
+thrown in the JavaType class itself.
+
+Separating the classes throwing the multiple Exceptions allowed us to control where the errors handled in the
+code was (codes syntax or code content?)
+
+(*) Checking if Java primitive type - for example the isDouble() and isInt() public methods in the JavaType
+class allowed us to check if a String representation input contents represents a boolean variable (double/
+int) as required in the instructions.
+
+Finally, we want to note that in the Sjavac class - all Exceptions are thrown in the FirstRunner() method
+(which checks for global variables and method signatures) and in the SecondRunner() method (which validates
+inner scopes).
+
+The Exceptions themselves were caught in the main() method - which prints the relevant int output (0/1/2).
+
+-------------------------------------------------------------------------------------------------------------
+- Regular Expressions (6.3 Questions) -
+
+Two of the main Regular Expressions that were used in out code:
+
+1. In the FirstRunnerValidator class (in the Regex package):
+
+    The following Regex was used to create a Pattern object used to recognize a method signature syntax
+
+                --A-            ------------B---------            -C-           --D--           --E--
+    "[ \\t\\r]*(void)[ \\t\\r]+([A-Za-z]+[A-Za-z_0-9]*)[ \\t\\r]*(\\()[ \\t\\r]*((.)*)[ \\t\\r]*(\\))
+
+                --F--
+     [ \\t\\r]*(\\{)[ \\t\\r]*"
+
+
+
+(A) - the reserved word "void" - indicating the method does nor return anything
+
+(B) - the method name:
+           [A-Za-z]+ ->  means the method name must start with an uppercase/ lowercase letter (the "+" makes
+                         sure at least one letter is present at the first character in the method name).
+
+           [A-Za-z_0-9]* ->  after the first letter, "*" indicated the method name may contain any number of
+                             characters (including 0 characters) of letters/ digits/ underscore("_").
+
+(C) - "opening" parenthesis - "(" - indicating the start of where the method parameters are mentioned.
+
+(D) - (.)* allows 0 or more ("*") of any character (".") in order to catch and group all method parameters (if
+      exist). Later in the program flow, each parameter was checked separately, in order to validate its
+      syntax.
+
+(E) - "closing" parenthesis - ")" - indicating the end of where the method parameters are mentioned.
+
+(F) - "opening" curly brackets - "{" - indicating the opening of a the method local scope.
+
+Also, at the edges of the Regex, and Between A-F, we inserted [ \\t\\r]* in order to capture white spaces.
+
+
+
+2. In the SecondRunnerValidator class (in the Regex package):
+
+    The following Regex was used to create a Pattern object used to recognize a boolean statement:
+
+                ----A---            --B-          -C--            --D-           -E--
+    "[ \\t\\r]*(if|while)[ \\t\\r]*(\\()[ \\t\\r]*((.)*)[ \\t\\r]*(\\))[ \\t\\r]*(\\{)[ \\t\\r]*"
+
+
+(A) - "if" or "while" statement.
+
+(B) - "opening" parenthesis - "(" for the start of the inner boolean statement
+
+(C) - (.)* - 0 or more appearances of any character, which was later checked to validate that it matches:
+                (+) a boolean 'true' / 'false' kept word
+                (+) a previous scope variable, later checked and compared
+                (+) a string indicating a Double or an Int primitive - both referred to as "true"
+
+(D) - "closing" parenthesis - ")" for the end of the inner boolean statement
+
+(E) - "opening" curly brackets - "{" - indicating the opening of a the conditional local scope.
+
+Similarly to the previous Regex, at the edges of the Regex, and Between A-E, we inserted [ \\t\\r]* in order
+to capture white spaces.
+
+
+=============================
+=  Design  =
+=============================
+ - 6.2 Questions -
+
+1. General design characteristics -
+
+    (*) Encapsulation -
+
+        grouping together Exceptions which share the reason they are thrown, but still differ in the specific
+        details.
+
+        Similarly, we encapsulated similar classes in the same package (e.g. a package for all Java
+        Types created).
+
+    (*) Extendability -
+
+        Adding new Java patterns will allow the same validation code (in the Sjavac class) to run,
+        while needing to change /add only small patterns in the relevant Java class.
+
+        Also, In order to extend the program to support addition types (e.g. "float") can be done by
+        small additions to the JavaType constructor, as will be mentioned in more detail.
+
+    (*) Modularity -
+
+        We divided the program flow to different units in order to simplify the coding and improve
+        the modularity.
+
+        For example, syntax in checked in the "Regex" package classes, while the content is checked in
+        the "Type" package classes.
+
+        Also, In Sjavac, the global variable and method names are checked in the firstRunner() method,
+        while the local variable scopes and if /while conditions are checked in a different method
+        - secondRunner().
+
+    (*) Minimal API -
+
+        The user is not aware of almost anything in the way the program works "behind the scenes" -
+        for example the JavaType classes constructed, or the Regexes used to identify different string
+        patterns.
+
+-------------------------------------------------------------------------------------------------------------
+
+2. Question - How would you modify your code to add new types of variables (e.g. float)?
+
+    In order to modify our code to support validation of new variable types (e.g. float) we would extend
+    the JavaType class to support float variables.
+
+    Also, we would need to update a single Regex pattern (generalStructureRegex Pattern object) in the
+    FirstRunnerValidator() class to also search for Strings containing the new keyword (e.g. "float").
+
+    Due to the program modularity, these are the only class variable that would be necessary to update.
+-------------------------------------------------------------------------------------------------------------
+
+3. These are the modification we would have done in our code to support the following features:
+
+(*) Classes :
+    - we would add to the "Type" package a JavaClass class which will hold data on the type of the class
+    constructed - e.g. is it abstract? does it extend one/ multiple interfaces?
+
+    - The "Regex" package would include new Regexes to identify unique keywords relevant for classes -
+    (such as "Class" keyword, "this", "super", and "extends"). Also, The new Regex patterns will include
+    relevant Regexes for class-specific methods - such as constructors (the Regex pattern would identify a
+    constructor method by sharing the same name as the class itself, for example).
+
+    - The Sjavac class will include a "global" data structure which will hold data on class methods and
+    variables in the class' scope.
+
+    - We want to emphasis that most of the firstRunner() and secondRunner() code in the Sjavac class will
+    not be changed, because besides unique class keywords and methods (e.g. constructors) - all other
+    class methods and variables will we handled very similar to the current program flow.
+
+  (*) Using methods of standart java :
+
+    - We would add new regex patterns for the FirstRunnerValidator() and the SecondRunnerValidator()
+    classes in the "Regex" package.
+
+    - The new patterns will recognize and group strings contains java methods - e.g. searching for the
+    "System.*" keywords.
+
+    - The Sjavac firstRunner() and secondRunner() methods conditions will be extended to validate standart
+     java methods, or throw exceptions in case the java standart method is invalid.
+
+
+
